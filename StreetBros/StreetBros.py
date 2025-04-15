@@ -316,6 +316,8 @@ Player2_hoja_desno = [Player2_walk_desno_1, Player2_walk_desno_2, Player2_walk_d
 Player1 = Borec("Bro Num 1", 100, None, 5, 50, "Stand", False, False, False, -30, 370, 1, False, False, 0, False)
 Player2 = Borec("Bro Num 2", 100, None, 5, 50, "Stand", False, False, False, 850, 370, 0, False, False, 0, False)
 
+#dodan komentar
+
 # Začetne pozicije za skoke
 Player1_y_start = Player1.y
 Player2_y_start = Player2.y
