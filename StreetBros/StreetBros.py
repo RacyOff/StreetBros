@@ -740,4 +740,5 @@ while Borba:
     pygame.display.flip()
     clock.tick(60)
 
+#konec igte
 pygame.quit()
