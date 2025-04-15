@@ -6,6 +6,8 @@ pygame.init()
 pygame.display.set_caption("StreetBros - Oskar Kopač, R2C")
 
 # Setup zaslona in časa
+#probavam git
+#nov branch
 length = 1280
 width = 720
 screen = pygame.display.set_mode((length, width))
