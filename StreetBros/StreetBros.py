@@ -5,7 +5,6 @@ import random
 pygame.init()
 pygame.display.set_caption("StreetBros - Oskar Kopač, R2C")
 
-# Setup zaslona in časa
 length = 1280
 width = 720
 screen = pygame.display.set_mode((length, width))
@@ -14,19 +13,18 @@ center = screen.get_rect().center
 # Stanja igre
 Borba = True
 Menu = False
-frame_counter = 0 #FPS 
+frame_counter = 0 
 game_over = False  # Novo stanje za konec igre
 winner = None  # Shrani zmagovalca
 
-udar1 = pygame.transform.scale(pygame.image.load("efekti\\udar1.png"), (100, 100)),
-udar2 = pygame.transform.scale(pygame.image.load("efekti\\udar1.png"), (100, 100)),
-udar3 = pygame.transform.scale(pygame.image.load("efekti\\udar1.png"), (100, 100))
+udar1 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100)),
+udar2 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100)),
+udar3 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100))
 
-KO = pygame.transform.scale(pygame.image.load("efekti\KO.png"), (300,300))
-game_over_bg = pygame.transform.scale(pygame.image.load("efekti\game_over.jpg"), (1280,720))
-pritisni_enter = pygame.transform.scale(pygame.image.load("efekti\pritisni_enter.png"), (300,200))
-game_over_icon = pygame.transform.scale(pygame.image.load("efekti\game_over_icon.png"),(500,500))
-# Razred za borca
+KO = pygame.transform.scale(pygame.image.load("StreetBros/efekti/KO.png"), (300,300))
+game_over_bg = pygame.transform.scale(pygame.image.load("StreetBros/efekti/game_over.jpg"), (1280,720))
+pritisni_enter = pygame.transform.scale(pygame.image.load("StreetBros/efekti/pritisni_enter.png"), (300,200))
+game_over_icon = pygame.transform.scale(pygame.image.load("StreetBros/efekti/game_over_icon.png"),(500,500))
 
 class Krogla:
     def __init__(self, x, y, smer):
@@ -34,7 +32,7 @@ class Krogla:
         self.y = y
         self.smer = smer  # 1 za desno, 0 za levo
         self.hitrost = 15
-        self.slika = pygame.transform.scale(pygame.image.load("player1/special/ogenj_1.png"), (150, 150))
+        self.slika = pygame.transform.scale(pygame.image.load("StreetBros/player1/special/ogenj_1.png"), (150, 150))
         
     def premik_desno(self):
         self.x += 10
@@ -49,7 +47,6 @@ class Krogla:
             self.premik_levo()
         
     def je_izven_zaslona(self, sirina_zaslona):
-        #Preveri, če je krogla izven zaslona
         if self.x < -100 or self.x > sirina_zaslona + 100:
             return True
         return False
@@ -59,19 +56,20 @@ class Krogla:
             return True
         else:
             return False
+
 class Strela:
     def __init__(self, x, y, smer):
         self.x = x
         self.y = y
         self.smer = smer  # 1 za desno, 0 za levo
-        self.hitrost = 20  # Povečana hitrost strele
-        self.slika = pygame.transform.scale(pygame.image.load("player2/strela/strela_1.png"), (150, 150))
+        self.hitrost = 20
+        self.slika = pygame.transform.scale(pygame.image.load("StreetBros/player2/strela/strela_1.png"), (150, 150))
         
     def premik_desno(self):
-        self.x += 15  # Povečana hitrost premika
+        self.x += 15
     
     def premik_levo(self):
-        self.x -= 15  # Povečana hitrost premika
+        self.x -= 15
 
     def posodobi(self):
         if self.smer == 1:
@@ -89,6 +87,7 @@ class Strela:
             return True
         else:
             return False
+
 class Borec:
     def __init__(self, ime, health, avatar, Tocka_na_udarec, hitrost, pozicija, blok, udarec, tek, x, y, smer, walk, skok, hitrost_skoka, special):
         self.tek = tek
@@ -147,19 +146,15 @@ class Borec:
         if self.cooldown_krogle > 0:
             self.cooldown_krogle -= 1
         
-        # Posodobi vse krogle -> premakne jo v njeno smer glede na smer igralca
         for krogla in self.krogle[:]:
             krogla.posodobi()
-            
             
             if krogla.je_izven_zaslona(sirina_zaslona):
                 self.krogle.remove(krogla)
                 continue
                 
-            
             if krogla.trk_z_igralcem(Player2):
                 Player1.special= False
-
                 if Player2.blok == False or (Player2.blok == True and Player2.smer == Player1.smer):
                     Player2.zbij_health(10)
                 else:
@@ -171,16 +166,13 @@ class Borec:
         if self.cooldown_strela > 0:
             self.cooldown_strela -= 1
         
-       
         for strela in self.strele[:]:
             strela.posodobi()
             
-            # Preveri, če je strela izven zaslona
             if strela.je_izven_zaslona(sirina_zaslona):
                 self.strele.remove(strela)
                 continue
                 
-            # Preveri trk z nasprotnikom
             if strela.trk_z_igralcem(Player1):
                 Player2.special = False
                 if Player1.blok == False or (Player1.blok == True and Player1.smer == Player2.smer):
@@ -192,13 +184,9 @@ class Borec:
 
     def get_rezilo_pozicija(self):
         if self.smer == 1:  # Desno
-            return (self.x + 200, self.y + 100, self.x + 300, self.y + 250)  # x1, y1, x2, y2
+            return (self.x + 200, self.y + 100, self.x + 300, self.y + 250)
         else:  # Levo
-            return (self.x, self.y + 100, self.x + 100, self.y + 250)  # x1, y1, x2, y2
-
-
-
-    
+            return (self.x, self.y + 100, self.x + 100, self.y + 250)
 
     def premik_levo(self):
         self.x -= 20
@@ -234,13 +222,9 @@ class Borec:
         elif self.x >= length-300:
             self.x = length-300
 
-
     def preveri_health(self):
         if self.health <= 0:
                 screen.blit()
-
-   
-
 
 class MAP:
     def __init__(self, picture, max_x, min_x, max_y, min_y, sound):
@@ -253,12 +237,14 @@ class MAP:
         
     def __str__(self):
         return self.url
+
 class UdarEffect:
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.frame = 0
         self.images = [udar1, udar2, udar3]
+
 class SPECIAL:
     def __init__(self, x, y):
         self.x = x
@@ -269,67 +255,56 @@ class SPECIAL:
         
     def premik_levo(self):
         self.x -= 10
+
 udar_effects = []
 
-
-
 # Naloži mape
-NightCity = MAP("wp5418813-anime-pixel-art-wallpapers.png", length, 0, width, 0, "music\Seek & Destroy (Remastered).mp3")
-Forest_Map = MAP("8-bit-graphics-pixels-scene-with-forest (1).jpg", length, 0, width, 0, "music\Master of Puppets (Remastered).mp3")  
+NightCity = MAP("StreetBros/wp5418813-anime-pixel-art-wallpapers.png", length, 0, width, 0, "StreetBros/music/Seek & Destroy (Remastered).mp3")
+Forest_Map = MAP("StreetBros/8-bit-graphics-pixels-scene-with-forest (1).jpg", length, 0, width, 0, "StreetBros/music/Master of Puppets (Remastered).mp3")  
 
 # Naloži slike za igralca 1
-player1_crouch_desno = pygame.transform.scale(pygame.image.load("player1/crouch/player1_crouch_desno.png"), (350, 350))
-player1_crouch_levo = pygame.transform.scale(pygame.image.load("player1\crouch\player1_crough_levo.png"), (350, 350))
-player1_stand_levo = pygame.transform.scale(pygame.image.load("player1/stand/player1_stand_levo.png"), (350, 350))
-player1_stand_desno = pygame.transform.scale(pygame.image.load("player1/stand/player1_stand_desno.jpg"), (350, 350))
-player1_walk_desno_2 = pygame.transform.scale(pygame.image.load("player1/walk-desno/player1_walk_desno_2.png"), (350, 350))
-player1_walk_desno_3 = pygame.transform.scale(pygame.image.load("player1/walk-desno/player1_walk_desno_3.png"), (350, 350))
-player1_blok_desno = pygame.transform.scale(pygame.image.load("player1/defend/player1_blok_desno.png"), (350, 350))
-player1_blok_levo = pygame.transform.scale(pygame.image.load("player1/defend/player1_blok_levo.png"), (350, 350))
-player1_walk_levo_2 = pygame.transform.scale(pygame.image.load("player1\walk-levo\player1_walk_levo_2.png"), (350, 350))
-player1_walk_levo_3 = pygame.transform.scale(pygame.image.load("player1\walk-levo\player1_walk_levo_3.png"), (350, 350))
-player1_fireball_desno = pygame.transform.scale(pygame.image.load("player1\special\player1_fireball_desno.png"), (350, 350))
-player1_fireball_levo = pygame.transform.scale(pygame.image.load("player1\special\player1_fireball_levo.png"), (350, 350))
+player1_crouch_desno = pygame.transform.scale(pygame.image.load("StreetBros/player1/crouch/player1_crouch_desno.png"), (350, 350))
+player1_crouch_levo = pygame.transform.scale(pygame.image.load("StreetBros/player1/crouch/player1_crough_levo.png"), (350, 350))
+player1_stand_levo = pygame.transform.scale(pygame.image.load("StreetBros/player1/stand/player1_stand_levo.png"), (350, 350))
+player1_stand_desno = pygame.transform.scale(pygame.image.load("StreetBros/player1/stand/player1_stand_desno.jpg"), (350, 350))
+player1_walk_desno_2 = pygame.transform.scale(pygame.image.load("StreetBros/player1/walk-desno/player1_walk_desno_2.png"), (350, 350))
+player1_walk_desno_3 = pygame.transform.scale(pygame.image.load("StreetBros/player1/walk-desno/player1_walk_desno_3.png"), (350, 350))
+player1_blok_desno = pygame.transform.scale(pygame.image.load("StreetBros/player1/defend/player1_blok_desno.png"), (350, 350))
+player1_blok_levo = pygame.transform.scale(pygame.image.load("StreetBros/player1/defend/player1_blok_levo.png"), (350, 350))
+player1_walk_levo_2 = pygame.transform.scale(pygame.image.load("StreetBros/player1/walk-levo/player1_walk_levo_2.png"), (350, 350))
+player1_walk_levo_3 = pygame.transform.scale(pygame.image.load("StreetBros/player1/walk-levo/player1_walk_levo_3.png"), (350, 350))
+player1_fireball_desno = pygame.transform.scale(pygame.image.load("StreetBros/player1/special/player1_fireball_desno.png"), (350, 350))
+player1_fireball_levo = pygame.transform.scale(pygame.image.load("StreetBros/player1/special/player1_fireball_levo.png"), (350, 350))
 
 # Naloži slike za igralca 2
-player2_crouch_levo = pygame.transform.scale(pygame.image.load("player2/crouch/player2_crouch_levo.png"), (350, 350))
-player2_crouch_desno = pygame.transform.scale(pygame.image.load("player2/crouch/player2_crouch_desno.png"), (350, 350))
-player2_stand_levo = pygame.transform.scale(pygame.image.load("player2/stand/player2_stand_levo.png"), (350, 350))
-player2_stand_desno = pygame.transform.scale(pygame.image.load("player2/stand/player2_stand_desno.png"), (350, 350))
-Player2_walk_levo_2 = pygame.transform.scale(pygame.image.load("player2\walk-levo\player1_walk_levo_2.png"), (350, 350))
-Player2_walk_levo_3 = pygame.transform.scale(pygame.image.load("player2\walk-levo\player1_walk_levo_3.png"), (350, 350))
-Player2_walk_levo_1 = pygame.transform.scale(pygame.image.load("player2\walk-levo\player2_walk_levo_1.png"), (350, 350))
-Player2_walk_desno_1 = pygame.transform.scale(pygame.image.load("player2\walk-desno\Player2_walk_desno_1.png"), (350, 350))
-Player2_walk_desno_2 = pygame.transform.scale(pygame.image.load("player2\walk-desno\Player2_walk_desno_2.png"), (350, 350))
-Player2_walk_desno_3 = pygame.transform.scale(pygame.image.load("player2\walk-desno\Player2_walk_desno_3.png"), (350, 350))
-player2_blok_desno = pygame.transform.scale(pygame.image.load("player2\defend\player2_blok_desno.png"), (350, 350))
-player2_blok_levo = pygame.transform.scale(pygame.image.load("player2\defend\player2_blok_levo.png"), (350, 350))
-
-
-player2_strela_desno = pygame.transform.scale(pygame.image.load("player2\strela\player2_strela_desno.png"), (350, 350))
-player2_strela_levo = pygame.transform.scale(pygame.image.load("player2\strela\player2_strela_levo.png"), (350, 350))
-
-
-
-
-
+player2_crouch_levo = pygame.transform.scale(pygame.image.load("StreetBros/player2/crouch/player2_crouch_levo.png"), (350, 350))
+player2_crouch_desno = pygame.transform.scale(pygame.image.load("StreetBros/player2/crouch/player2_crouch_desno.png"), (350, 350))
+player2_stand_levo = pygame.transform.scale(pygame.image.load("StreetBros/player2/stand/player2_stand_levo.png"), (350, 350))
+player2_stand_desno = pygame.transform.scale(pygame.image.load("StreetBros/player2/stand/player2_stand_desno.png"), (350, 350))
+Player2_walk_levo_2 = pygame.transform.scale(pygame.image.load("StreetBros/player2/walk-levo/player1_walk_levo_2.png"), (350, 350))
+Player2_walk_levo_3 = pygame.transform.scale(pygame.image.load("StreetBros/player2/walk-levo/player1_walk_levo_3.png"), (350, 350))
+Player2_walk_levo_1 = pygame.transform.scale(pygame.image.load("StreetBros/player2/walk-levo/player2_walk_levo_1.png"), (350, 350))
+Player2_walk_desno_1 = pygame.transform.scale(pygame.image.load("StreetBros/player2/walk-desno/Player2_walk_desno_1.png"), (350, 350))
+Player2_walk_desno_2 = pygame.transform.scale(pygame.image.load("StreetBros/player2/walk-desno/Player2_walk_desno_2.png"), (350, 350))
+Player2_walk_desno_3 = pygame.transform.scale(pygame.image.load("StreetBros/player2/walk-desno/Player2_walk_desno_3.png"), (350, 350))
+player2_blok_desno = pygame.transform.scale(pygame.image.load("StreetBros/player2/defend/player2_blok_desno.png"), (350, 350))
+player2_blok_levo = pygame.transform.scale(pygame.image.load("StreetBros/player2/defend/player2_blok_levo.png"), (350, 350))
+player2_strela_desno = pygame.transform.scale(pygame.image.load("StreetBros/player2/strela/player2_strela_desno.png"), (350, 350))
+player2_strela_levo = pygame.transform.scale(pygame.image.load("StreetBros/player2/strela/player2_strela_levo.png"), (350, 350))
 
 #slike za p2 attack na blizu
-p2_cd_1=pygame.transform.scale(pygame.image.load("player2\cross\player2_attack_desno_1.png"), (350, 350))
-p2_cd_2=pygame.transform.scale(pygame.image.load("player2\cross\player2_attack_desno_2.png"), (350, 350))
-p2_cd_3=pygame.transform.scale(pygame.image.load("player2\cross\player2_attack_desno_3.png"), (350, 350))
+p2_cd_1=pygame.transform.scale(pygame.image.load("StreetBros/player2/cross/player2_attack_desno_1.png"), (350, 350))
+p2_cd_2=pygame.transform.scale(pygame.image.load("StreetBros/player2/cross/player2_attack_desno_2.png"), (350, 350))
+p2_cd_3=pygame.transform.scale(pygame.image.load("StreetBros/player2/cross/player2_attack_desno_3.png"), (350, 350))
 
-p2_cl_1=pygame.transform.scale(pygame.image.load("player2\cross\player2_attack_levo_1.png"), (350, 350))
-p2_cl_2=pygame.transform.scale(pygame.image.load("player2\cross\player2_attack_levo_2.png"), (350, 350))
-p2_cl_3=pygame.transform.scale(pygame.image.load("player2\cross\player2_attack_levo_3.png"), (350, 350))
+p2_cl_1=pygame.transform.scale(pygame.image.load("StreetBros/player2/cross/player2_attack_levo_1.png"), (350, 350))
+p2_cl_2=pygame.transform.scale(pygame.image.load("StreetBros/player2/cross/player2_attack_levo_2.png"), (350, 350))
+p2_cl_3=pygame.transform.scale(pygame.image.load("StreetBros/player2/cross/player2_attack_levo_3.png"), (350, 350))
 
 player2_attack_desno = [p2_cd_1,p2_cd_2,p2_cd_3]
 player2_attack_levo = [p2_cl_1,p2_cl_2,p2_cl_3]
 
-
-
-
-strela = pygame.transform.scale(pygame.image.load("player2\strela\strela_1.png"), (150, 150))
+strela = pygame.transform.scale(pygame.image.load("StreetBros/player2/strela/strela_1.png"), (150, 150))
 
 # Seznami za animacije hoje
 Player1_hoja_desno = [player1_stand_desno, player1_walk_desno_2, player1_walk_desno_3]
@@ -349,33 +324,28 @@ Player2_y_start = Player2.y
 Current_slika_1 = pygame.transform.scale(player1_stand_desno, (350,350))
 Current_slika_2 = pygame.transform.scale(player2_stand_levo,(350,350))
 
-KO = pygame.transform.scale(pygame.image.load("efekti\KO.png"), (300,300))
-
-
+KO = pygame.transform.scale(pygame.image.load("StreetBros/efekti/KO.png"), (300,300))
 
 # Izberi mapo
 izbrana_mapa = NightCity.url
 
-krogla1 = pygame.transform.scale(pygame.image.load("player1\special\ogenj_1.png"), (150,150))
-krogla2 = pygame.transform.scale(pygame.image.load("player1\special\ogenj_2.png"), (150,150))
+krogla1 = pygame.transform.scale(pygame.image.load("StreetBros/player1/special/ogenj_1.png"), (150,150))
+krogla2 = pygame.transform.scale(pygame.image.load("StreetBros/player1/special/ogenj_2.png"), (150,150))
 krogle_frames = [krogla1, krogla2]
-
 
 # Specialni efekti
 fireball = SPECIAL(Player1.x, Player1.y)
-fireball_slika = pygame.transform.scale(pygame.image.load("player1\special\ogenj_1.png"), (150,150))
+fireball_slika = pygame.transform.scale(pygame.image.load("StreetBros/player1/special/ogenj_1.png"), (150,150))
 Max_frames = 10
 special_frames = 0
 
 frames_krogle = []
-odzadje = pygame.image.load("efekti/waitingPic.jpg")
-logo = pygame.transform.scale(pygame.image.load("efekti\logo.png"),(600,600))
-
-
+odzadje = pygame.image.load("StreetBros/efekti/waitingPic.jpg")
+logo = pygame.transform.scale(pygame.image.load("StreetBros/efekti/logo.png"),(600,600))
 
 def izberi_mapo():
     global NightCity, Forest_Map
-    pygame.mixer.music.load("music\lobby.mp3")  
+    pygame.mixer.music.load("StreetBros/music/lobby.mp3")  
     pygame.mixer.music.set_volume(0.5) 
     pygame.mixer.music.play()
     screen.blit(odzadje, (0,0))
@@ -410,28 +380,18 @@ if izbrana_mapa_ == NightCity:
 if izbrana_mapa_ == Forest_Map:
     izbrana_mapa = Forest_Map.url
 
-
-
-
 # Glavna zanka igre
 pygame.mixer.music.play(-1)
-
-
-
-
 
 def konec_igre():
     pygame.mixer.music.stop()
     pygame.mixer.music.unload()
-    pygame.mixer.music.load("music\pixel-dreams-259187.mp3")
-    pygame.mixer.music.play(-1)  # Dodano, da se glasba dejansko predvaja
+    pygame.mixer.music.load("StreetBros/music/pixel-dreams-259187.mp3")
+    pygame.mixer.music.play(-1)
     
     while True:
         screen.blit(odzadje, (0,0))
         screen.blit(game_over_icon, game_over_icon.get_rect(center = screen.get_rect().center))
-        
-        # Prikaz zmagovalca
-    
         
         pygame.display.flip()
         
@@ -441,7 +401,6 @@ def konec_igre():
                 sys.exit()
             
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                # Ponastavitev igre
                 Player1.health = Player1.max_health
                 Player2.health = Player2.max_health
                 Player1.x, Player1.y = -30, 370
@@ -457,12 +416,9 @@ def konec_igre():
                 pygame.mixer.music.unload()
                 pygame.mixer.music.load(izbrana_mapa_.sound)
                 pygame.mixer.music.play(-1)
-                return  # Izhod iz funkcije in nadaljevanje igre
+                return
                 
         clock.tick(60)
-
-
-
 
 while Borba:
     starter_x_fireball = Player1.x
@@ -561,17 +517,13 @@ while Borba:
                 Current_slika_2 = player2_stand_desno
                 Player2.hoja()
 
-        # Spuščanje tipk
         elif event.type == pygame.KEYUP:
-            
-
             if event.key == pygame.K_p:
                 Player2.udarec_animacija = False
                 if Player2.smer == 1:
                     Current_slika_2 = player2_stand_desno
                 else:
                     Current_slika_2 = player2_stand_levo
-            
 
             # Igralec 1
             if event.key == pygame.K_q and Player1.smer == 1: 
@@ -675,14 +627,12 @@ while Borba:
     screen.blit(izbrana_mapa, (0,0))
     
     # Nariši health bare in imena
-    # Health bar za Player1
     pygame.draw.rect(screen, (255,0,0), (50, 45, 300, 30))
     pygame.draw.rect(screen, (0,255,0), (50, 45, 300 * (Player1.health/Player1.max_health), 30))
     font = pygame.font.SysFont(None, 36)
     text = font.render(f"{Player1.ime}: {Player1.health}/{Player1.max_health}", True, (255,255,255))
     screen.blit(text, (50, 10))
     
-    # Health bar za Player2
     pygame.draw.rect(screen, (255,0,0), (length - 350, 45, 300, 30))
     pygame.draw.rect(screen, (0,255,0), (length - 350,45, 300 * (Player2.health/Player2.max_health), 30))
     text = font.render(f"{Player2.ime}: {Player2.health}/{Player2.max_health}", True, (255,255,255))
@@ -712,44 +662,35 @@ while Borba:
                 Current_slika_2 = Player2_hoja_levo[(frame_counter // 8) % len(Player2_hoja_levo)]
 
     # Posodobi animacijo udarca za Player2
-    # V glavni zanki igre, v delu za animacijo udarca
     if Player2.udarec_animacija:
         if Player2.udarec_cooldown > 0:
             Player2.udarec_cooldown -= 1
             
-            # Določimo območje rezila
             x1, y1, x2, y2 = Player2.get_rezilo_pozicija()
             
-            # Preverimo trk samo v aktivnih frameih animacije (npr. 1 in 2)
             if Player2.udarec_frame in [1, 2] and Player2.zadnji_udarec_frame != Player2.udarec_frame:
-                # Preverimo prekrivanje območij
                 if (x1 < Player1.x + 200 and x2 > Player1.x and
                     y1 < Player1.y + 300 and y2 > Player1.y):
                     
-                    # Preverimo blok
                     if not Player1.blok or (Player1.blok and Player1.smer != Player2.smer):
                         Player1.zbij_health(15)
                         udar_effects.append(UdarEffect((x1+x2)//2, (y1+y2)//2))
                         Player2.zadnji_udarec_frame = Player2.udarec_frame
             
-            # Prikaz animacije
             if Player2.smer == 1:
                 Current_slika_2 = player2_attack_desno[Player2.udarec_frame]
             else:
                 Current_slika_2 = player2_attack_levo[Player2.udarec_frame]
             
-            # Posodobimo frame
             if frame_counter % 5 == 0:
                 Player2.udarec_frame = (Player2.udarec_frame + 1) % len(player2_attack_desno)
         else:
             Player2.udarec_animacija = False
             Player2.zadnji_udarec_frame = -1
-            # Vrnitev v osnovno pozicijo
             if Player2.smer == 1:
                 Current_slika_2 = player2_stand_desno
             else:
                 Current_slika_2 = player2_stand_levo
-
 
     # Nariši igralce
     screen.blit(Current_slika_1, (Player1.x, Player1.y))
@@ -780,7 +721,6 @@ while Borba:
         game_over = False
         
 
-
     if Player1.health <= 0:
         game_over = True
         winner = Player2
@@ -793,10 +733,8 @@ while Borba:
         Player1.score += 1
         Player2.health = 0
 
-
     Player1.preveri_border()
     Player2.preveri_border()
-
 
     frame_counter += 1
     pygame.display.flip()
