@@ -1,6 +1,6 @@
 import pygame #type:ignore
 
-
+# Igralec 1
 player1_crouch_desno = pygame.transform.scale(pygame.image.load("player1/crouch/player1_crouch_desno.png"), (350, 350))
 player1_crouch_levo = pygame.transform.scale(pygame.image.load("player1\crouch\player1_crough_levo.png"), (350, 350))
 player1_stand_levo = pygame.transform.scale(pygame.image.load("player1/stand/player1_stand_levo.png"), (350, 350))
