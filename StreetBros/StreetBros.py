@@ -14,7 +14,7 @@ center = screen.get_rect().center
 # Stanja igre
 Borba = True
 Menu = False
-frame_counter = 0 
+frame_counter = 0 #FPS 
 game_over = False  # Novo stanje za konec igre
 winner = None  # Shrani zmagovalca
 
