@@ -17,6 +17,10 @@ frame_counter = 0
 game_over = False  # Novo stanje za konec igre
 winner = None  # Shrani zmagovalca
 
+#dodam udarec za p1
+player1_attack_desno = [pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_desno_1.png"), (350,350)),pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_desno_2.png"), (350,350)),pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_desno_3.png"), (350,350))]
+player1_attack_levo = [pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_levo_1.png"), (350)),pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_levo_2.png"),(350,350)),pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_levo_3.png"),(350))]
+
 udar1 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100)),
 udar2 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100)),
 udar3 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100))
@@ -430,7 +434,13 @@ while Borba:
             Borba = False
         
         elif event.type == pygame.KEYDOWN:
-            # Igralec 1
+            
+            if event.key == pygame.K_r:
+                Player1.udarec_animacija = True
+                Player1.udarec_frame = 0
+                Player1.udarec_cooldown = 15
+
+
             if event.key == pygame.K_q and Player1.smer == 1 and Player1.blok == False: 
                 Player1.special = True
                 Current_slika_1 = player1_fireball_desno
@@ -524,6 +534,13 @@ while Borba:
                     Current_slika_2 = player2_stand_desno
                 else:
                     Current_slika_2 = player2_stand_levo
+
+            if event.key == pygame.K_r:
+                Player1.udarec_animacija = False
+                if Player1.smer == 1:
+                    Current_slika_1 = player1_stand_desno
+                else:
+                    Current_slika_1 = player1_stand_levo
 
             # Igralec 1
             if event.key == pygame.K_q and Player1.smer == 1: 
@@ -691,6 +708,37 @@ while Borba:
                 Current_slika_2 = player2_stand_desno
             else:
                 Current_slika_2 = player2_stand_levo
+
+
+    if Player1.udarec_animacija:
+        if Player1.udarec_cooldown > 0:
+            Player1.udarec_cooldown -= 1
+            
+            x1, y1, x2, y2 = Player1.get_rezilo_pozicija()
+            
+            if Player1.udarec_frame in [1, 2] and Player1.zadnji_udarec_frame != Player1.udarec_frame:
+                if (x1 < Player2.x + 200 and x2 > Player2.x and
+                    y1 < Player2.y + 300 and y2 > Player2.y):
+                    
+                    if not Player2.blok or (Player2.blok and Player2.smer != Player1.smer):
+                        Player2.zbij_health(15)
+                        udar_effects.append(UdarEffect((x1+x2)//2, (y1+y2)//2))
+                        Player1.zadnji_udarec_frame = Player1.udarec_frame
+            
+            if Player1.smer == 1:
+                Current_slika_1 = player1_attack_desno[Player1.udarec_frame]
+            else:
+                Current_slika_1 = player1_attack_levo[Player1.udarec_frame]
+            
+            if frame_counter % 5 == 0:
+                Player1.udarec_frame = (Player1.udarec_frame + 1) % len(player1_attack_desno)
+        else:
+            Player1.udarec_animacija = False
+            Player1.zadnji_udarec_frame = -1
+            if Player1.smer == 1:
+                Current_slika_1 = player1_stand_desno
+            else:
+                Current_slika_1 = player1_stand_levo
 
     # Nariši igralce
     screen.blit(Current_slika_1, (Player1.x, Player1.y))
