@@ -18,8 +18,18 @@ game_over = False  # Novo stanje za konec igre
 winner = None  # Shrani zmagovalca
 
 #dodam udarec za p1
-player1_attack_desno = [pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_desno_1.png"), (350,350)),pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_desno_2.png"), (350,350)),pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_desno_3.png"), (350,350))]
-player1_attack_levo = [pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_levo_1.png"), (350)),pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_levo_2.png"),(350,350)),pygame.transform.scale(pygame.image.load("StreetBros\player1\attack\player1_hit_levo_3.png"),(350))]
+
+
+PD1 = pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\player1_hit_desno_1.png"),(350,350))
+PD2 = pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\player1_hit_desno_2.png"), (350,350))
+PD3 =pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\player1_hit_desno_3.png"), (350,350))
+
+PL1 = pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\player1_hit_levo_1.png"), (350,350))
+PL2 =pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\player1_hit_levo_2.png"), (350,350))
+PL3 =pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\player1_hit_levo_3.png"), (350,350))
+
+player1_attack_desno = [PD1,PD2,PD3]
+player1_attack_levo = [PL1,PL2,PL3]
 
 udar1 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100)),
 udar2 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100)),
