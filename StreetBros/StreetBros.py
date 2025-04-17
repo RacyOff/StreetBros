@@ -9,6 +9,7 @@ from borec import Borec
 pygame.init()
 pygame.display.set_caption("StreetBros - Oskar Kopač, R2C")
 
+# Setup zaslona in časa
 length = 1280
 width = 720
 screen = pygame.display.set_mode((length, width))
@@ -139,6 +140,8 @@ Player2_hoja_desno = [Player2_walk_desno_1, Player2_walk_desno_2, Player2_walk_d
 # Ustvari igralce
 Player1 = Borec("Bro Num 1", 100, None, 5, 50, "Stand", False, False, False, -30, 370, 1, False, False, 0, False)
 Player2 = Borec("Bro Num 2", 100, None, 5, 50, "Stand", False, False, False, 850, 370, 0, False, False, 0, False)
+
+#dodan komentar
 
 # Začetne pozicije za skoke
 Player1_y_start = Player1.y
@@ -608,4 +611,5 @@ while Borba:
     pygame.display.flip()
     clock.tick(60)
 
+#konec igte
 pygame.quit()
