@@ -49,7 +49,6 @@ pritisni_enter = pygame.transform.scale(pygame.image.load("StreetBros/efekti/pri
 game_over_icon = pygame.transform.scale(pygame.image.load("StreetBros/efekti/game_over_icon.png"),(500,500))
 
 
-
 udar_effects = []
 
 # Naloži mape
@@ -186,11 +185,16 @@ if izbrana_mapa_ == Forest_Map:
 # Glavna zanka igre
 pygame.mixer.music.play(-1)
 
+
+
 def konec_igre():
     pygame.mixer.music.stop()
     pygame.mixer.music.unload()
     pygame.mixer.music.load("StreetBros/music/pixel-dreams-259187.mp3")
     pygame.mixer.music.play(-1)
+    
+    # Display winner information
+   
     
     while True:
         screen.blit(odzadje, (0,0))
@@ -204,6 +208,7 @@ def konec_igre():
                 sys.exit()
             
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                # Reset everything including scores
                 Player1.health = Player1.max_health
                 Player2.health = Player2.max_health
                 Player1.x, Player1.y = -30, 370
@@ -214,6 +219,8 @@ def konec_igre():
                 Player2.special = False
                 Player1.krogle = []
                 Player2.strele = []
+                Player1.score = 0
+                Player2.score = 0
                 game_over = False
                 pygame.mixer.music.stop()
                 pygame.mixer.music.unload()
@@ -222,6 +229,8 @@ def konec_igre():
                 return
                 
         clock.tick(60)
+
+
 
 while Borba:
     starter_x_fireball = Player1.x
@@ -567,18 +576,49 @@ while Borba:
         konec_igre()
         game_over = False
         
+    
+        font = pygame.font.SysFont(None, 36)
+    
+    # Player 1 info
+    pygame.draw.rect(screen, (255,0,0), (50, 45, 300, 30))
+    pygame.draw.rect(screen, (0,255,0), (50, 45, 300 * (Player1.health/Player1.max_health), 30))
+    health_text = font.render(f"{Player1.ime}: {Player1.health}/{Player1.max_health}", True, (255,255,255))
+    score_text = font.render(f"Score: {Player1.score}", True, (255, 255, 255))
+    screen.blit(health_text, (50, 10))
+    screen.blit(score_text, (50, 80))
+    
+    # Player 2 info
+    pygame.draw.rect(screen, (255,0,0), (length - 350, 45, 300, 30))
+    pygame.draw.rect(screen, (0,255,0), (length - 350,45, 300 * (Player2.health/Player2.max_health), 30))
+    health_text = font.render(f"{Player2.ime}: {Player2.health}/{Player2.max_health}", True, (255,255,255))
+    score_text = font.render(f"Score: {Player2.score}", True, (255, 255, 255))
+    screen.blit(health_text, (length - 350, 10))
+    screen.blit(score_text, (length - 350, 80))
+    
+    # Score display in center top
+    score_display = font.render(f"{Player1.score} : {Player2.score}", True, (255, 255, 0))
+    screen.blit(score_display, (length // 2 - 30, 10))
+
 
     if Player1.health <= 0:
-        game_over = True
-        winner = Player2
         Player2.score += 1
-        Player1.health = 0
+        Player1.health = Player1.max_health
+        Player2.health = Player2.max_health
+        Player1.x, Player1.y = -30, 370
+        Player2.x, Player2.y = 850, 370
+        if Player2.score >= 3:
+            game_over = True
+            winner = Player2
     
     if Player2.health <= 0:
-        game_over = True
-        winner = Player1
         Player1.score += 1
-        Player2.health = 0
+        Player1.health = Player1.max_health
+        Player2.health = Player2.max_health
+        Player1.x, Player1.y = -30, 370
+        Player2.x, Player2.y = 850, 370
+        if Player1.score >= 3:
+            game_over = True
+            winner = Player1
 
     Player1.preveri_border()
     Player2.preveri_border()
