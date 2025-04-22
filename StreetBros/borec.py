@@ -1,5 +1,8 @@
 import pygame
 from krogla import Krogla
+from strela import Strela  # Add this import at the top
+from krogla import Krogla  # You'll likely need this too
+
 length = 1280
 width = 720
 screen = pygame.display.set_mode((length, width))
@@ -57,7 +60,7 @@ class Borec:
             return True
         return False
 
-    def posodobi_krogle(self, sirina_zaslona):
+    def posodobi_krogle(self, sirina_zaslona, opponent):
         if self.cooldown_krogle > 0:
             self.cooldown_krogle -= 1
         
@@ -68,16 +71,16 @@ class Borec:
                 self.krogle.remove(krogla)
                 continue
                 
-            if krogla.trk_z_igralcem(Player2):
-                Player1.special= False
-                if Player2.blok == False or (Player2.blok == True and Player2.smer == Player1.smer):
-                    Player2.zbij_health(10)
+            if krogla.trk_z_igralcem(opponent):
+                self.special = False
+                if opponent.blok == False or (opponent.blok == True and opponent.smer == self.smer):
+                    opponent.zbij_health(10)
                 else:
                     pass
                     
                 self.krogle.remove(krogla)
 
-    def posodobi_strele(self, sirina_zaslona):
+    def posodobi_strele(self, sirina_zaslona, opponent):
         if self.cooldown_strela > 0:
             self.cooldown_strela -= 1
         
@@ -88,14 +91,13 @@ class Borec:
                 self.strele.remove(strela)
                 continue
                 
-            if strela.trk_z_igralcem(Player1):
-                Player2.special = False
-                if Player1.blok == False or (Player1.blok == True and Player1.smer == Player2.smer):
-                    Player1.zbij_health(10)
+            if strela.trk_z_igralcem(opponent):
+                self.special = False
+                if opponent.blok == False or (opponent.blok == True and opponent.smer == self.smer):
+                    opponent.zbij_health(10)
                 else:
                     pass
                 self.strele.remove(strela)
-    
 
     def get_rezilo_pozicija(self):
         if self.smer == 1:  # Desno

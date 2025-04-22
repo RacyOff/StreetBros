@@ -258,7 +258,7 @@ while Borba:
                 Player1.special = True
                 Current_slika_1 = player1_fireball_levo
                 Player1.ustvari_kroglo()
-            Player1.posodobi_krogle(length)
+            Player1.posodobi_krogle(length, Player2)
 
             if event.key == pygame.K_p:
                 Player2.udarec_animacija = True
@@ -426,8 +426,8 @@ while Borba:
                 Current_slika_2 = player2_stand_levo
                 Player2.walk = False
 
-    Player1.posodobi_krogle(1280)
-    Player2.posodobi_strele(1280)
+    Player1.posodobi_krogle(1280, Player2)
+    Player2.posodobi_strele(1280, Player1)
 
     # Premikanje igralcev
     keys = pygame.key.get_pressed()
