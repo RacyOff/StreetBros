@@ -33,8 +33,6 @@ PL1 = pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\playe
 PL2 =pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\player1_hit_levo_2.png"), (350,350))
 PL3 =pygame.transform.scale(pygame.image.load("StreetBros\player1\\attack\player1_hit_levo_3.png"), (350,350))
 
-player1_attack_desno = [PD1,PD2,PD3]
-player1_attack_levo = [PL1,PL2,PL3]
 
 udar1 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100)),
 udar2 = pygame.transform.scale(pygame.image.load("StreetBros/efekti/udar1.png"), (100, 100)),
@@ -108,6 +106,10 @@ fireball_slika = pygame.transform.scale(pygame.image.load("StreetBros/player1/sp
 
 odzadje = pygame.image.load("StreetBros/efekti/waitingPic.jpg")
 logo = pygame.transform.scale(pygame.image.load("StreetBros/efekti/logo.png"),(600,600))
+
+
+player1_attack_desno = [PD1,PD2,PD3]
+player1_attack_levo = [PL1,PL2,PL3]
 
 #------------------------------------------ konec dodajanja slik--------------------------------------------------------------------
 
@@ -236,21 +238,25 @@ while Borba:
         
         elif event.type == pygame.KEYDOWN:
             
-            if event.key == pygame.K_r:
+            if event.key == pygame.K_c:
                 Player1.udarec_animacija = True
                 Player1.udarec_frame = 0
                 Player1.udarec_cooldown = 15
 
 
-            if event.key == pygame.K_q and Player1.smer == 1 and Player1.blok == False: 
+            if event.key == pygame.K_b and Player1.smer == 1 and Player1.blok == False and Player1.stamina >= 0: 
                 Player1.special = True
                 Current_slika_1 = player1_fireball_desno
+                Player1.stamina -= 20
                 Player1.ustvari_kroglo()
               
-            if event.key == pygame.K_q and Player1.smer == 0 and Player1.blok == False: 
+            if event.key == pygame.K_b and Player1.smer == 0 and Player1.blok == False and Player1.stamina >= 0: 
                 Player1.special = True
                 Current_slika_1 = player1_fireball_levo
+                Player1.stamina -= 20
                 Player1.ustvari_kroglo()
+                
+
             Player1.posodobi_krogle(length, Player2)
 
             if event.key == pygame.K_p:
@@ -262,11 +268,11 @@ while Borba:
             if event.key == pygame.K_w:
                 Player1.skoci()
 
-            if keys[pygame.K_e] and Player1.smer == 1:
+            if keys[pygame.K_v] and Player1.smer == 1:
                 Current_slika_1 = player1_blok_desno
                 Player1.blok = True
              
-            if keys[pygame.K_e] and Player1.smer == 0:
+            if keys[pygame.K_v] and Player1.smer == 0:
                 Current_slika_1 = player1_blok_levo
                 Player1.blok = True
             
@@ -289,15 +295,20 @@ while Borba:
                 Player1.hoja()
 
             # Igralec 2
-            if event.key == pygame.K_u and Player2.smer == 1: 
+            if event.key == pygame.K_u and Player2.smer == 1 and Player2.stamina >= 0: 
                 Player2.special = True
                 Current_slika_2 = player2_strela_desno
+                Player2.stamina -= 20
                 Player2.ustvari_strelo()
+
               
-            if event.key == pygame.K_u and Player2.smer == 0: 
+            if event.key == pygame.K_u and Player2.smer == 0 and Player2.stamina >= 0: 
                 Player2.special = True
                 Current_slika_2 = player2_strela_levo
+                Player2.stamina -= 20
                 Player2.ustvari_strelo()
+                
+
 
             if event.key == pygame.K_i:
                 Player2.skoci()
@@ -336,7 +347,7 @@ while Borba:
                 else:
                     Current_slika_2 = player2_stand_levo
 
-            if event.key == pygame.K_r:
+            if event.key == pygame.K_c:
                 Player1.udarec_animacija = False
                 if Player1.smer == 1:
                     Current_slika_1 = player1_stand_desno
@@ -344,10 +355,10 @@ while Borba:
                     Current_slika_1 = player1_stand_levo
 
             # Igralec 1
-            if event.key == pygame.K_q and Player1.smer == 1: 
+            if event.key == pygame.K_b and Player1.smer == 1: 
                 Current_slika_1 = player1_stand_desno
                 
-            if event.key == pygame.K_q and Player1.smer == 0: 
+            if event.key == pygame.K_b and Player1.smer == 0: 
                 Current_slika_1 = player1_stand_levo
 
             if event.key == pygame.K_s and Player1.smer == 1:
@@ -360,11 +371,11 @@ while Borba:
                 Current_slika_1 = player1_stand_levo
                 Player1.walk = False
             
-            if event.key == pygame.K_e and Player1.smer == 1:
+            if event.key == pygame.K_v and Player1.smer == 1:
                 Current_slika_1 = player1_stand_desno
                 Player1.blok = False
 
-            if event.key == pygame.K_e and Player1.smer == 0:
+            if event.key == pygame.K_v and Player1.smer == 0:
                 Current_slika_1 = player1_stand_levo
                 Player1.blok = False
 
@@ -587,6 +598,14 @@ while Borba:
     #Prikaže score še gor
     score_display = font.render(f"{Player1.score} : {Player2.score}", True, (255, 255, 0))
     screen.blit(score_display, (length // 2 - 30, 10))
+
+
+
+    #risanje stamine
+    pygame.draw.rect(screen, (255,0,0), (50, 60, 300, 30))
+    pygame.draw.rect(screen, (0,255,0), (50, 60, 300 * (Player1.stamina/Player1.max_stamina), 30))
+
+
 
 
     if Player1.health <= 0:

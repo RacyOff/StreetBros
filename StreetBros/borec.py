@@ -38,6 +38,8 @@ class Borec:
         self.udarec_cooldown = 0
         self.zadnji_udarec_frame = -1 
         self.score = 0
+        self.stamina = 100
+        self.max_stamina = 100
     
     def zbij_health(self, vrednost):
         self.health -= vrednost
@@ -47,7 +49,7 @@ class Borec:
             zacetni_x = self.x + 150 if self.smer == 1 else self.x - 50
             nova_strela = Strela(zacetni_x, self.y + 100, self.smer)
             self.strele.append(nova_strela)
-            self.cooldown_strela = 100 
+            self.cooldown_strela = 30
             return True
         return False
 
