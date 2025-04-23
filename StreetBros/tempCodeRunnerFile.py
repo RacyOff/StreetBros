@@ -1,1 +1,1 @@
-music\Master of Puppets (Remp3mastered).
+from strela import Strela 

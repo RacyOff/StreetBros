@@ -10,6 +10,8 @@ from special import SPECIAL
 
 
 pygame.init()
+
+
 pygame.display.set_caption("StreetBros - Oskar Kopač, R2C")
 
 length = 1280
@@ -22,6 +24,16 @@ Menu = False
 frame_counter = 0 
 game_over = False  # Novo stanje za konec igre
 winner = None  
+
+
+#mapi
+NightCity = MAP("StreetBros/wp5418813-anime-pixel-art-wallpapers.png", length, 0, width, 0, "StreetBros/music/Seek & Destroy (Remastered).mp3")
+Forest_Map = MAP("StreetBros/forth.jpg", length, 0, width, 0, "StreetBros/music/Master of Puppets (Remastered).mp3")  
+
+#Bro1 in Bro2
+Player1 = Borec("Bro Num 1", 100, None, 5, 50, "Stand", False, False, False, -30, 370, 1, False, False, 0, False)
+Player2 = Borec("Bro Num 2", 100, None, 5, 50, "Stand", False, False, False, 850, 370, 0, False, False, 0, False)
+
 
 #Dodajanje Framov (za oba igralca): crouch, blokada, napad, strel ... --------------------------------------------------------------------------------
 
@@ -43,9 +55,6 @@ pritisni_enter = pygame.transform.scale(pygame.image.load("StreetBros/efekti/pri
 game_over_icon = pygame.transform.scale(pygame.image.load("StreetBros/efekti/game_over_icon.png"),(500,500))
 udar_effects = []
 
-# Mapi
-NightCity = MAP("StreetBros/wp5418813-anime-pixel-art-wallpapers.png", length, 0, width, 0, "StreetBros/music/Seek & Destroy (Remastered).mp3")
-Forest_Map = MAP("StreetBros/8-bit-graphics-pixels-scene-with-forest (1).jpg", length, 0, width, 0, "StreetBros/music/Master of Puppets (Remastered).mp3")  
 
 #Frami za Player1
 player1_crouch_desno = pygame.transform.scale(pygame.image.load("StreetBros/player1/crouch/player1_crouch_desno.png"), (350, 350))
@@ -107,7 +116,7 @@ fireball_slika = pygame.transform.scale(pygame.image.load("StreetBros/player1/sp
 odzadje = pygame.image.load("StreetBros/efekti/waitingPic.jpg")
 logo = pygame.transform.scale(pygame.image.load("StreetBros/efekti/logo.png"),(600,600))
 
-
+#p1 arr slikic za udarec (za animacijo)
 player1_attack_desno = [PD1,PD2,PD3]
 player1_attack_levo = [PL1,PL2,PL3]
 
@@ -121,11 +130,7 @@ class UdarEffect:
         self.images = [udar1, udar2, udar3]
 
 
-#ustvarim igralce s classom borec
-Player1 = Borec("Bro Num 1", 100, None, 5, 50, "Stand", False, False, False, -30, 370, 1, False, False, 0, False)
-Player2 = Borec("Bro Num 2", 100, None, 5, 50, "Stand", False, False, False, 850, 370, 0, False, False, 0, False)
-
-#Začetne koordinate Playerjev (Y): za skos
+#Začetne koordinate Playerjev (Y): za skok
 Player1_y_start = Player1.y
 Player2_y_start = Player2.y
 
@@ -188,9 +193,6 @@ def konec_igre(): #Funkcija se kliče, ko je igra končana (Nekdo ima score 3)
     pygame.mixer.music.load("StreetBros/music/pixel-dreams-259187.mp3")
     pygame.mixer.music.play(-1)
     
-    # Display winner information
-   
-    
     while True:
         screen.blit(odzadje, (0,0))
         screen.blit(game_over_icon, game_over_icon.get_rect(center = screen.get_rect().center))
@@ -203,7 +205,7 @@ def konec_igre(): #Funkcija se kliče, ko je igra končana (Nekdo ima score 3)
                 sys.exit()
             
             if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                # Reset everything including scores
+                #funkcija vse resetira
                 Player1.health = Player1.max_health
                 Player2.health = Player2.max_health
                 Player1.x, Player1.y = -30, 370
@@ -225,7 +227,7 @@ def konec_igre(): #Funkcija se kliče, ko je igra končana (Nekdo ima score 3)
                 
         clock.tick(60)
 
-#--------------------Main Loop -> event handlerji + klici ključnih funkcij------------------------------------
+#--------------------Main Loop -> event handlerji + klici ključnih funkcij + risanje podatkov------------------------------------
 
 while Borba:
     starter_x_fireball = Player1.x
@@ -244,13 +246,13 @@ while Borba:
                 Player1.udarec_cooldown = 15
 
 
-            if event.key == pygame.K_b and Player1.smer == 1 and Player1.blok == False and Player1.stamina >= 0: 
+            if event.key == pygame.K_b and Player1.smer == 1 and Player1.blok == False and Player1.stamina > 0: 
                 Player1.special = True
                 Current_slika_1 = player1_fireball_desno
                 Player1.stamina -= 20
                 Player1.ustvari_kroglo()
               
-            if event.key == pygame.K_b and Player1.smer == 0 and Player1.blok == False and Player1.stamina >= 0: 
+            if event.key == pygame.K_b and Player1.smer == 0 and Player1.blok == False and Player1.stamina > 0: 
                 Player1.special = True
                 Current_slika_1 = player1_fireball_levo
                 Player1.stamina -= 20
@@ -458,7 +460,7 @@ while Borba:
     # Risanje health bare in imena
     pygame.draw.rect(screen, (255,0,0), (50, 45, 300, 30))
     pygame.draw.rect(screen, (0,255,0), (50, 45, 300 * (Player1.health/Player1.max_health), 30))
-    font = pygame.font.SysFont(None, 36)
+    font = pygame.font.SysFont(None, 45)
     text = font.render(f"{Player1.ime}: {Player1.health}/{Player1.max_health}", True, (255,255,255))
     screen.blit(text, (50, 10))
     
@@ -584,30 +586,27 @@ while Borba:
     pygame.draw.rect(screen, (255,0,0), (50, 45, 300, 30))
     pygame.draw.rect(screen, (0,255,0), (50, 45, 300 * (Player1.health/Player1.max_health), 30))
     health_text = font.render(f"{Player1.ime}: {Player1.health}/{Player1.max_health}", True, (255,255,255))
-    score_text = font.render(f"Score: {Player1.score}", True, (255, 255, 255))
+    score_text = font.render(f"{Player1.score} : {Player2.score}", True, (255, 255, 255))
     screen.blit(health_text, (50, 10))
-    screen.blit(score_text, (50, 80))
+    screen.blit(score_text, (length//2 -30,45))
     
     pygame.draw.rect(screen, (255,0,0), (length - 350, 45, 300, 30))
     pygame.draw.rect(screen, (0,255,0), (length - 350,45, 300 * (Player2.health/Player2.max_health), 30))
     health_text = font.render(f"{Player2.ime}: {Player2.health}/{Player2.max_health}", True, (255,255,255))
-    score_text = font.render(f"Score: {Player2.score}", True, (255, 255, 255))
     screen.blit(health_text, (length - 350, 10))
-    screen.blit(score_text, (length - 350, 80))
     
-    #Prikaže score še gor
-    score_display = font.render(f"{Player1.score} : {Player2.score}", True, (255, 255, 0))
-    screen.blit(score_display, (length // 2 - 30, 10))
+    
+    #risanje stamine P1
+    pygame.draw.rect(screen, (128,128,128), (50, 68, 300, 10))
+    pygame.draw.rect(screen, (0,0,255), (50, 68, 300 * (Player1.stamina/Player1.max_stamina), 10))
+
+    #risanje stamine za P2
+    pygame.draw.rect(screen, (128,128,128), (length - 350, 68, 300, 10))
+    pygame.draw.rect(screen, (0,0,255), (length - 350, 68, 300 * (Player2.stamina/Player2.max_stamina), 10))
 
 
 
-    #risanje stamine
-    pygame.draw.rect(screen, (255,0,0), (50, 60, 300, 30))
-    pygame.draw.rect(screen, (0,255,0), (50, 60, 300 * (Player1.stamina/Player1.max_stamina), 30))
-
-
-
-
+ #preverjanje healtha igalcov
     if Player1.health <= 0:
         Player2.score += 1
         Player1.health = Player1.max_health

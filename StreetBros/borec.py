@@ -1,7 +1,6 @@
-import pygame
+import pygame #type:ignore
 from krogla import Krogla
-from strela import Strela  # Add this import at the top
-from krogla import Krogla  # You'll likely need this too
+from strela import Strela
 
 length = 1280
 width = 720
