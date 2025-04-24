@@ -143,3 +143,11 @@ class Borec:
     def preveri_health(self):
         if self.health <= 0:
                 screen.blit()
+
+    def povecaj_stamino(self):
+        if self.stamina < 100:
+            self.stamina += 5
+        elif self.stamina > 100:
+            self.stamina = self.max_stamina
+        elif self.stamina < 0:
+            self.stamina = 0

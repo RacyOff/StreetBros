@@ -11,7 +11,7 @@ from special import SPECIAL
 
 pygame.init()
 
-
+timer = 1
 pygame.display.set_caption("StreetBros - Oskar Kopač, R2C")
 
 length = 1280
@@ -186,6 +186,7 @@ if izbrana_mapa_ == Forest_Map:
 # Glavna zanka igre
 pygame.mixer.music.play(-1)
 
+previous_frame_time = time.time()
 
 def konec_igre(): #Funkcija se kliče, ko je igra končana (Nekdo ima score 3)
     pygame.mixer.music.stop()
@@ -230,6 +231,18 @@ def konec_igre(): #Funkcija se kliče, ko je igra končana (Nekdo ima score 3)
 #--------------------Main Loop -> event handlerji + klici ključnih funkcij + risanje podatkov------------------------------------
 
 while Borba:
+
+
+    #timer za stamino
+    time_now = time.time()
+    time_diff = time_now - previous_frame_time
+    previous_frame_time = time_now
+    timer -= time_diff
+    if timer <= 0:
+        timer = 1
+        Player1.povecaj_stamino()
+        Player2.povecaj_stamino()
+
     starter_x_fireball = Player1.x
     
     for event in pygame.event.get():
@@ -246,13 +259,13 @@ while Borba:
                 Player1.udarec_cooldown = 15
 
 
-            if event.key == pygame.K_b and Player1.smer == 1 and Player1.blok == False and Player1.stamina > 0: 
+            if event.key == pygame.K_b and Player1.smer == 1 and Player1.blok == False and Player1.stamina > 20: 
                 Player1.special = True
                 Current_slika_1 = player1_fireball_desno
                 Player1.stamina -= 20
                 Player1.ustvari_kroglo()
               
-            if event.key == pygame.K_b and Player1.smer == 0 and Player1.blok == False and Player1.stamina > 0: 
+            if event.key == pygame.K_b and Player1.smer == 0 and Player1.blok == False and Player1.stamina > 20: 
                 Player1.special = True
                 Current_slika_1 = player1_fireball_levo
                 Player1.stamina -= 20
@@ -297,14 +310,14 @@ while Borba:
                 Player1.hoja()
 
             # Igralec 2
-            if event.key == pygame.K_u and Player2.smer == 1 and Player2.stamina >= 0: 
+            if event.key == pygame.K_u and Player2.smer == 1 and Player2.stamina > 20: 
                 Player2.special = True
                 Current_slika_2 = player2_strela_desno
                 Player2.stamina -= 20
                 Player2.ustvari_strelo()
 
               
-            if event.key == pygame.K_u and Player2.smer == 0 and Player2.stamina >= 0: 
+            if event.key == pygame.K_u and Player2.smer == 0 and Player2.stamina > 20: 
                 Player2.special = True
                 Current_slika_2 = player2_strela_levo
                 Player2.stamina -= 20
@@ -598,11 +611,20 @@ while Borba:
     
     #risanje stamine P1
     pygame.draw.rect(screen, (128,128,128), (50, 68, 300, 10))
-    pygame.draw.rect(screen, (0,0,255), (50, 68, 300 * (Player1.stamina/Player1.max_stamina), 10))
+
+    if Player1.stamina >= 25:
+        pygame.draw.rect(screen, (0,0,255), (50, 68, 300 * (Player1.stamina/Player1.max_stamina), 10))
+    else:
+        pygame.draw.rect(screen, (255,11,85), (50, 68, 300 * (Player1.stamina/Player1.max_stamina), 10))
+ 
 
     #risanje stamine za P2
     pygame.draw.rect(screen, (128,128,128), (length - 350, 68, 300, 10))
-    pygame.draw.rect(screen, (0,0,255), (length - 350, 68, 300 * (Player2.stamina/Player2.max_stamina), 10))
+
+    if Player2.stamina >= 25:
+        pygame.draw.rect(screen, (0,0,255), (length - 350, 68, 300 * (Player2.stamina/Player2.max_stamina), 10))
+    else: 
+        pygame.draw.rect(screen, (255,11,85), (length - 350, 68, 300 * (Player2.stamina/Player2.max_stamina), 10))
 
 
 
@@ -613,6 +635,9 @@ while Borba:
         Player2.health = Player2.max_health
         Player1.x, Player1.y = -30, 370
         Player2.x, Player2.y = 850, 370
+        Player2.stamina = Player2.max_stamina
+        Player1.stamina = Player1.max_stamina
+
         if Player2.score >= 3:
             game_over = True
             winner = Player2
@@ -623,6 +648,8 @@ while Borba:
         Player2.health = Player2.max_health
         Player1.x, Player1.y = -30, 370
         Player2.x, Player2.y = 850, 370
+        Player2.stamina = Player2.max_stamina
+        Player1.stamina = Player1.max_stamina
         if Player1.score >= 3:
             game_over = True
             winner = Player1
