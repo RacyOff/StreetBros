@@ -5,6 +5,9 @@ from strela import Strela
 length = 1280
 width = 720
 screen = pygame.display.set_mode((length, width))
+
+
+
 class Borec:
     def __init__(self, ime, health, avatar, Tocka_na_udarec, hitrost, pozicija, blok, udarec, tek, x, y, smer, walk, skok, hitrost_skoka, special):
         self.tek = tek
