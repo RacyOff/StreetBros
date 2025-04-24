@@ -516,7 +516,7 @@ while Borba:
                 if (x1 < Player1.x + 200 and x2 > Player1.x and
                     y1 < Player1.y + 300 and y2 > Player1.y):
                     
-                    if Player1.blok != True and (Player1.smer == Player2.smer):
+                    if Player1.blok != True and (Player1.smer == Player2.smer) or Player1.blok == True and Player1.smer == Player2.smer:
                         Player1.zbij_health(5)
                         udar_effects.append(UdarEffect((x1+x2)//2, (y1+y2)//2))
                         Player2.zadnji_udarec_frame = Player2.udarec_frame
@@ -547,7 +547,7 @@ while Borba:
                 if (x1 < Player2.x + 200 and x2 > Player2.x and
                     y1 < Player2.y + 300 and y2 > Player2.y):
                     
-                    if Player2.blok != True and (Player2.smer == Player1.smer):
+                    if Player2.blok != True and (Player2.smer == Player1.smer) or Player2.blok == True and Player2.smer == Player1.smer:
                         Player2.zbij_health(5)
                         udar_effects.append(UdarEffect((x1+x2)//2, (y1+y2)//2))
                         Player1.zadnji_udarec_frame = Player1.udarec_frame
